@@ -218,4 +218,131 @@ contract AbiEncoderDemo {
 
         strategyData = abi.encodePacked(nameData, poolsData, weighsData, "YIELD_STRATEGY_V1");
     }
+
+    /**
+     * @dev Demonstrates encoding data for a cross-chain bridge
+     * @param sourceChain Source chain
+     * @param targetChain Target chain
+     * @param token Token to transfer
+     * @param amount Amount
+     * @param recipient Recipient
+     * @return bridgeData Encoded bridge data
+     */
+    function encodeCrossChainBridgeData(
+        uint256 sourceChain,
+        uint256 targetChain,
+        address token,
+        uint256 amount,
+        address recipient
+    ) external pure returns (bytes memory bridgeData) {
+        bridgeData = abi.encodePacked(
+            sourceChain,
+            targetChain,
+            token,
+            amount,
+            recipient,
+            "CROSS_CHAIN_BRIDGE"
+        );
+    }
+    
+    /**
+     * @dev Creates a unique identifier for a DeFi transaction
+     * @param txType Transaction type
+     * @param user User
+     * @param timestamp Timestamp
+     * @param nonce Unique nonce
+     * @return txId Unique transaction identifier
+     */
+    function createDeFiTransactionId(
+        string calldata txType,
+        address user,
+        uint256 timestamp,
+        uint256 nonce
+    ) external pure returns (bytes32 txId) {
+        txId = keccak256(
+            abi.encodePacked(
+                txType,
+                user,
+                timestamp,
+                nonce,
+                "DEFI_TX"
+            )
+        );
+    }
+    
+    /**
+     * @dev Encodes data for a stop loss order
+     * @param user User address
+     * @param token Token to sell
+     * @param amount Amount to sell
+     * @param stopPrice Stop loss price
+     * @param triggerPrice Trigger price
+     * @return stopLossData Encoded order data
+     */
+    function encodeStopLossOrder(
+        address user,
+        address token,
+        uint256 amount,
+        uint256 stopPrice,
+        uint256 triggerPrice
+    ) external pure returns (bytes memory stopLossData) {
+        stopLossData = abi.encodePacked(
+            user,
+            token,
+            amount,
+            stopPrice,
+            triggerPrice,
+            "STOP_LOSS_ORDER"
+        );
+    }
+    
+    /**
+     * @dev Encodes data for a take profit order
+     * @param user User address
+     * @param token Token to sell
+     * @param amount Amount to sell
+     * @param takeProfitPrice Take profit price
+     * @return takeProfitData Encoded order data
+     */
+    function encodeTakeProfitOrder(
+        address user,
+        address token,
+        uint256 amount,
+        uint256 takeProfitPrice
+    ) external pure returns (bytes memory takeProfitData) {
+        takeProfitData = abi.encodePacked(
+            user,
+            token,
+            amount,
+            takeProfitPrice,
+            "TAKE_PROFIT_ORDER"
+        );
+    }
+    
+    /**
+     * @dev Encodes data for a trailing stop order
+     * @param user User address
+     * @param token Token to sell
+     * @param amount Amount to sell
+     * @param trailingPercent Trailing percentage
+     * @param activationPrice Activation price
+     * @return trailingStopData Encoded order data
+     */
+    function encodeTrailingStopOrder(
+        address user,
+        address token,
+        uint256 amount,
+        uint256 trailingPercent,
+        uint256 activationPrice
+    ) external pure returns (bytes memory trailingStopData) {
+        trailingStopData = abi.encodePacked(
+            user,
+            token,
+            amount,
+            trailingPercent,
+            activationPrice,
+            "TRAILING_STOP_ORDER"
+        );
+    }
+
 }
