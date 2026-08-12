@@ -87,4 +87,41 @@ contract AbiEncoderDemo {
         // Encode everything
         swapData = abi.encodePacked(pathData, amountData, deadline);
     }
+
+    /**
+    * @dev Encode limit orders
+    * @param maker Maker address
+    * @param taker Taker address
+    * @param tokenIn Input token
+    * @param tokenOut Output token
+    * @param amountIn Input amount
+    * @param amountOut Output amount
+    * @param nonce Unique nonce
+    * @return orderHash
+    * @return orderData
+    */
+    function encodeLimitOrder(
+        address maker,
+        address taker,
+        address tokenIn,
+        address tokenOut,
+        uint256 amountIn,
+        uint256 amountOut,
+        uint256 nonce
+    ) external pure returns(bytes32 orderHash, bytes memory orderData) {
+        // Encode order data
+        orderData = abi.encodePacked(
+            maker,
+            taker,
+            tokenIn,
+            tokenOut,
+            amountIn,
+            amountOut,
+            nonce,
+            "RANDOM_STRING_ORDER_DATA_V1"
+        );
+
+        // Create order hash
+        orderHash = keccak256(orderData);
+    }
 }
