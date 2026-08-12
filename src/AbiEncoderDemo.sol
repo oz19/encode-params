@@ -179,4 +179,18 @@ contract AbiEncoderDemo {
             block.timestamp
         );
     }
+
+    function createUserMultiPoolHash(
+        address user,
+        bytes32[] calldata poolIds
+    ) external pure returns(bytes32 userHash) {
+        bytes memory data = abi.encodePacked(user);
+
+        for (uint256 i = 0; i < poolIds.length; i++){
+            data = abi.encodePacked(data, poolIds[i]);
+        }
+
+        data = abi.encodePacked(data, "MULTI_POOL_USER");
+        userHash = keccak256(data);
+    }
 }
