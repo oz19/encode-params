@@ -118,7 +118,7 @@ contract AbiEncoderDemo {
             amountIn,
             amountOut,
             nonce,
-            "RANDOM_STRING_ORDER_DATA_V1"
+            "ORDER_DATA_V1"
         );
 
         // Create order hash
@@ -139,7 +139,7 @@ contract AbiEncoderDemo {
         uint256 amount,
         uint256 startTime
     ) external pure returns(bytes32 positionId) {
-        positionId = keccak256(abi.encodePacked(user, poolId, amount, startTime, "RANDOM_STRING_YIELD_POSITION");)
+        positionId = keccak256(abi.encodePacked(user, poolId, amount, startTime, "YIELD_POSITION"));
     }
 
     /**
@@ -170,7 +170,7 @@ contract AbiEncoderDemo {
         uint256 rewardRate,
         uint256 lockPeriod,
         uint256 maxStakers
-    ) external pure returns(bytes memory poolConfig) {
+    ) external view returns(bytes memory poolConfig) {
         poolConfig = abi.encodePacked(
             token,
             rewardRate,
@@ -192,5 +192,30 @@ contract AbiEncoderDemo {
 
         data = abi.encodePacked(data, "MULTI_POOL_USER");
         userHash = keccak256(data);
+    }
+
+    function encodeYieldStrategy(
+        string calldata strategyName,
+        address[] calldata pools,
+        uint256[] calldata weighs
+    ) external pure returns(bytes memory strategyData) {
+        require(pools.length == weighs.length, "Array length must be equal");
+
+        // Encode strategy name
+        bytes memory nameData = abi.encodePacked(strategyName);
+
+        // Encode pools data
+        bytes memory poolsData;
+        for (uint i = 0; i < pools.length; i++ ) {
+            poolsData = abi.encodePacked(poolsData, pools[i]);
+        }
+
+        // Encode weighs data
+        bytes memory weighsData;
+        for (uint i = 0; i < weighs.length; i++) {
+            weighsData = abi.encodePacked(weighsData, weighs[i]);
+        }
+
+        strategyData = abi.encodePacked(nameData, poolsData, weighsData, "YIELD_STRATEGY_V1");
     }
 }
