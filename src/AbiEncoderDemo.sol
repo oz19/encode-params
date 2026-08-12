@@ -156,4 +156,27 @@ contract AbiEncoderDemo {
     ) external pure returns(bytes memory flashLoanData) {
         flashLoanData = abi.encodePacked(token, amount, callbackData, "FLASH_LOAN_V1");
     }
+
+    /**
+    * @dev Encodes parameters for a staking pool
+    * @param token Token address
+    * @param rewardRate Reward rate
+    * @param lockPeriod Lock period
+    * @param maxStakers Maximum number of stakers
+    * @return poolConfig
+    */
+    function encodeStakingPoolConfig(
+        address token,
+        uint256 rewardRate,
+        uint256 lockPeriod,
+        uint256 maxStakers
+    ) external pure returns(bytes memory poolConfig) {
+        poolConfig = abi.encodePacked(
+            token,
+            rewardRate,
+            lockPeriod,
+            maxStakers,
+            block.timestamp
+        );
+    }
 }
