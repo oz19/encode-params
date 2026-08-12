@@ -39,6 +39,7 @@ contract AbiEncoderDemo {
     * @param tokenOut token bought
     * @param amountIn amount used to open the position
     * @param minAmountOut the minimum amount accepted back
+    * @param deadline max timestamp to run the transaction
     * @return positionId 
     * @return encodedData
     */
@@ -57,4 +58,33 @@ contract AbiEncoderDemo {
         positionId = keccak256(encodedData);
     }
 
+    /**
+    * @dev Swap data used in a DEX
+    * @param path array of tokens for the swap
+    * @param amount array of amounts
+    * @param deadline max timestamp to run the transaction
+    * @return swapData
+    */
+    function encodeSwapData(
+        address[] calldata path,
+        uint256[] calldata amount,
+        uint256 deadline
+    ) external pure returns(bytes memory swapData) {
+        require(path.length == amount.length, "Arrays must have the same size");
+
+        // Encode path data
+        bytes memory pathData;
+        for (uint i = 0; i < path.length; i++) {
+            pathData = abi.encodePacked(pathData, path[i]);
+        }
+
+        // Encode amount data
+        bytes memory amountData;
+        for (uint i = 0; i < amount.length; i++) {
+            amountData = abi.encodePacked(amountData, amount[i]);
+        }
+
+        // Encode everything
+        swapData = abi.encodePacked(pathData, amountData, deadline);
+    }
 }
