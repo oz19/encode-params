@@ -124,4 +124,21 @@ contract AbiEncoderDemo {
         // Create order hash
         orderHash = keccak256(orderData);
     }
+
+    /**
+    * @dev Encodes data for a yield farming position
+    * @param user User address
+    * @param poolId Pool Identifier
+    * @param amount Staked amount
+    * @param startTime Start time
+    * @return positionId
+    */
+    function encodeYieldPosition(
+        address user,
+        bytes32 poolId,
+        uint256 amount,
+        uint256 startTime
+    ) external pure returns(bytes32 positionId) {
+        positionId = keccak256(abi.encodePacked(user, poolId, amount, startTime, "RANDOM_STRING_YIELD_POSITION");)
+    }
 }
