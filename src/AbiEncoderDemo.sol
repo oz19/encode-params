@@ -141,4 +141,19 @@ contract AbiEncoderDemo {
     ) external pure returns(bytes32 positionId) {
         positionId = keccak256(abi.encodePacked(user, poolId, amount, startTime, "RANDOM_STRING_YIELD_POSITION");)
     }
+
+    /**
+    * @dev Encodes data for a flash loan
+    * @param token Flash loan token
+    * @param amount Flash loan amount
+    * @param callbackData Callback data
+    * @return flashLoanData
+    */
+    function encodeFlashLoan(
+        address token,
+        uint256 amount,
+        bytes calldata callbackData
+    ) external pure returns(bytes memory flashLoanData) {
+        flashLoanData = abi.encodePacked(token, amount, callbackData, "FLASH_LOAN_V1");
+    }
 }
