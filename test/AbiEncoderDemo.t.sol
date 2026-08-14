@@ -25,7 +25,49 @@ contract TestAbiEncoderDemo is Test {
         bytes32 poolIdAB = encoder.createPoolIdentifier(tokenA, tokenB, 0);
         bytes32 poolIdBA = encoder.createPoolIdentifier(tokenB, tokenA, 0);
 
-        assertEq(poolIdAB, poolIdBA);
+        assertEq(poolIdAB, poolIdBA, "Tokens are not correctly sorted");
+    }
+
+    function testDifferentFeesCreateDifferentPoolIdentifier() public view {
+        address tokenA = address(0x1000);
+        address tokenB = address(0x2000);
+        uint24 feeA = 3000;
+        uint24 feeB = 500;
+
+        bytes32 poolIdWithFeeA = encoder.createPoolIdentifier(tokenA, tokenB, feeA);
+        bytes32 poolIdWithFeeB = encoder.createPoolIdentifier(tokenA, tokenB, feeB);
+
+        assertNotEq(poolIdWithFeeA, poolIdWithFeeB, "Changing fee doesn't create a different `poolId`");
+    }
+
+    function testEncodeTradingPositionWorksCorrectly() public view {
+        address user = address(0x1000);
+        address tokenIn = address(0x0001);
+        address tokenOut = address(0x0002);
+        uint256 amountIn = 1e18;
+        uint256 minAmountOut = 2e18;
+        uint256 deadline = 1_800_000_000;  // Timestamp format
+        bytes memory encodedDataExpected = abi.encodePacked(
+            user,
+            tokenIn,
+            tokenOut,
+            amountIn,
+            minAmountOut,
+            deadline
+        );
+        bytes32 positionIdExpected = keccak256(encodedDataExpected);
+
+        (bytes32 positionId, bytes memory encodedData) = encoder.encodeTradingPosition(
+            user,
+            tokenIn,
+            tokenOut,
+            amountIn,
+            minAmountOut,
+            deadline
+        );
+
+        assertEq(encodedData, encodedDataExpected, "Data was not correctly encoded");
+        assertEq(positionId, positionIdExpected, "keccak did not work correctly");
     }
 
 }
