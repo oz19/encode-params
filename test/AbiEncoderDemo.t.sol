@@ -7,7 +7,7 @@ import "src/AbiEncoderDemo.sol";
 
 
 /// @title TestAbiEncoderDemo
-/// @notice Tests targeting 100% coverage for `AbiEncoderDemo.sol`
+/// @notice Tests for `AbiEncoderDemo.sol`
 contract TestAbiEncoderDemo is Test {
 
     AbiEncoderDemo private encoder;
@@ -68,6 +68,31 @@ contract TestAbiEncoderDemo is Test {
 
         assertEq(encodedData, encodedDataExpected, "Data was not correctly encoded");
         assertEq(positionId, positionIdExpected, "keccak did not work correctly");
+    }
+
+    function testEncodeSwapDataWorksCorrectly() public view {
+        address[] memory path = new address[](3);
+        path[0] = address(0x1);
+        path[1] = address(0x2);
+        path[2] = address(0x3);
+        uint256[] memory amount = new uint256[](3);
+        amount[0] = 10;
+        amount[1] = 20;
+        amount[2] = 30;
+        uint256 deadline = 1_800_000_000;
+        bytes memory pathData;
+        for(uint i = 0; i < path.length; i++) {
+            pathData = abi.encodePacked(pathData, path[i]);
+        }
+        bytes memory amountData;
+        for(uint i = 0; i < amount.length; i++) {
+            amountData = abi.encodePacked(amountData, amount[i]);
+        }
+        bytes memory swapDataExpected = abi.encodePacked(pathData, amountData, deadline);
+
+        bytes memory swapData = encoder.encodeSwapData(path, amount, deadline);
+
+        assertEq(swapData, swapDataExpected, "Swap Data should be equal and it's not");
     }
 
 }
