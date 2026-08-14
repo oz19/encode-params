@@ -70,6 +70,18 @@ contract TestAbiEncoderDemo is Test {
         assertEq(positionId, positionIdExpected, "keccak did not work correctly");
     }
 
+    function testEncodeSwapDataShouldFailForDifferentPathAndAmountArraySized() public {
+        address[] memory path = new address[](1);
+        path[0] = address(0x1);
+        uint256[] memory amount = new uint256[](2);
+        amount[0] = 10;
+        amount[1] = 20;
+        uint256 deadline = 1_800_000_000;
+
+        vm.expectRevert("Arrays must have the same size");
+        encoder.encodeSwapData(path, amount, deadline);
+    }
+    
     function testEncodeSwapDataWorksCorrectly() public view {
         address[] memory path = new address[](3);
         path[0] = address(0x1);
